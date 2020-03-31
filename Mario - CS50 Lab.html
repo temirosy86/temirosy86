@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<!-- saved from url=(0048)https://lab.cs50.io/cs50/labs/2020/x/mario/more/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- https://github.com/ -->
+        <link href="https://github.githubassets.com/favicon.ico" rel="icon">
+
+        <link href="./Mario - CS50 Lab_files/bootstrap.min.css" rel="stylesheet">
+
+        <script src="./Mario - CS50 Lab_files/jquery-3.3.1.min.js.download"></script>
+        <script src="./Mario - CS50 Lab_files/popper.min.js.download"></script>
+        <script src="./Mario - CS50 Lab_files/bootstrap.min.js.download"></script>
+        <script src="./Mario - CS50 Lab_files/split.min.js.download"></script>
+
+        <script>
+
+            // Current split
+            let instance = null;
+
+            // Destroy split
+            function destroy() {
+                if (instance) {
+                    instance.destroy();
+                    instance = null;
+                }
+            }
+
+            // Splits UI horizontally or vertically
+            function split() {
+
+                // Unless nothing to split
+                if ($('.split').length <= 1) {
+                    return;
+                }
+
+                // https://nathancahill.github.io/Split.js/
+                let options = {
+                    gutterSize: 4,
+                    onDragEnd: function() { // https://github.com/nathancahill/Split.js/issues/119
+                        $('iframe').css('display', 'none').height();
+                        $('iframe').css('display', 'block');
+                    },
+                    sizes: [40, 60]
+                };
+
+                // If desktop, per http://getbootstrap.com/docs/4.1/layout/overview/#responsive-breakpoints
+                if ($(this).width() >= 768) {
+
+                    // If not already horizontal
+                    if (!$('.split:first').hasClass('split-horizontal')) {
+                        destroy();
+                        instance = Split(['.split:nth-of-type(1)', '.split:nth-of-type(2)'], $.extend(options, {cursor: 'col-resize', direction: 'horizontal'}));
+                        $('.split').removeClass('split-vertical').addClass('split-horizontal');
+                    }
+                }
+
+                // If not desktop
+                else {
+
+                    // If already horizontal
+                    if (!$('.split:first').hasClass('split-vertical')) {
+                        destroy();
+                        instance = Split(['.split:nth-of-type(1)', '.split:nth-of-type(2)'], $.extend(options, {cursor: 'row-resize', direction: 'vertical'}));
+                        $('.split').removeClass('split-horizontal').addClass('split-vertical');
+                    }
+                }
+            }
+
+            // DOMContentLoaded
+            $(function() {
+
+                // Split UI
+                split();
+
+                // Listen for resize
+                $(window).on('resize', split);
+
+                // Configure popovers
+                $('*[data-toggle=popover]').popover({
+                    html: true,
+                    placement: 'bottom',
+                    trigger: 'click'
+                });
+
+                // Listen for click on (dynamically created) reset button
+                $(document).on('click', 'button[type=reset]', function() {
+                    $('#reset').popover('hide');
+                });
+
+                // Dismiss popover if body (but not iframe or popover itself) clicked
+                // https://jsfiddle.net/mattdlockyer/C5GBU/2/
+                $('body').on('click', function (e) {
+                    $('[data-toggle=popover]').each(function() {
+                        if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+                            $(this).popover('hide');
+                        }
+                    });
+                });
+
+                // Dismiss popover if iframe clicked
+                // http://www.jotform.org/jquery-codes/jquery-detect-click-outside-iframe/
+                $(window).on('blur', function() {
+                    $('*[data-toggle=popover]').popover('hide');
+                });
+
+            });
+
+        </script>
+
+        <style>
+
+            /* Fill viewport */
+            html, body {
+                height: 100%;
+            }
+            iframe {
+                border: 0;
+                width: 100%;
+            }
+
+            /* Split horizontally or vertical */
+            /* http://nathancahill.github.io/Split.js/ */
+            .split {
+                box-sizing: border-box;
+                overflow: hidden;
+            }
+            .split.split-horizontal, .gutter.gutter-horizontal {
+                height: 100%;
+                float: left;
+            }
+            .split.split-vertical {}
+
+            /* Match Codevolve's gutter */
+            /* https://api.codevolve.com/assets/codevolve-5198bf1fcea7e01923fdbdaf53b4522a.css */
+            .gutter {
+                background-color: #3b4448;
+            }
+
+            /* Draw attention to gutter */
+            .gutter.gutter-horizontal {
+                cursor: col-resize;
+            }
+            .gutter.gutter-vertical {
+                cursor: row-resize;
+            }
+
+            /* Grow to fill height */
+            /* https://stackoverflow.com/a/45642449/5156190 */
+            .flex-grow {
+                flex: 1 0 auto;
+            }
+
+            /* Match Codevolve's terminal */
+            nav {
+                background-color: rgb(30, 35, 37);
+            }
+
+            /* Shorten nav */
+            nav h4 {
+                margin-bottom: 0;
+            }
+
+            /* Disable underline */
+            nav h4 a:hover {
+                text-decoration: none;
+            }
+
+            /* Scroll instructions on iOS */
+            /* https://davidwalsh.name/scroll-iframes-ios */
+            .flex-column {
+                -webkit-overflow-scrolling: touch;
+                overflow-y: scroll;
+            }
+
+            /* Ensure Codevolve's gear doesn't spin forever */
+            iframe.flex-grow {
+                min-height: 151px;
+            }
+
+            /* Fill height */
+            iframe:not(.flex-grow) {
+                height: 100%;
+            }
+
+        </style>
+
+        <title>Mario - CS50 Lab</title>
+        
+
+    </head>
+
+    <body>
+
+        
+            <div class="split h-100 split-horizontal" style="width: calc(40% - 2px);">
+                <div class="d-flex flex-column h-100">
+                    <iframe allowfullscreen="" src="./Mario - CS50 Lab_files/more.html"></iframe>
+                </div>
+            </div>
+        
+
+        <div class="gutter gutter-horizontal" style="width: 4px;"></div><div class="split h-100 split-horizontal" style="width: calc(60% - 2px);">
+            <div class="d-flex flex-column h-100">
+                <nav class="navbar navbar-dark">
+                    <div>
+                        <h4><a class="text-white" href="https://lab.cs50.io/">CS50 Lab</a></h4>
+                        <span class="text-muted">Logged in as <strong>temirosy86</strong>. <a class="text-white" href="https://lab.cs50.io/logout">Log out</a>.</span>
+                    </div>
+                    <ul class="navbar-nav">
+                        <button class="btn btn-outline-dark btn-sm" data-content="
+                            &lt;div class=&#39;mb-3&#39;&gt;Reset this lab to its initial state? Any changes you&#39;ve made will be lost.&lt;/div&gt;
+                            &lt;form class=&#39;form-inline&#39; method=&#39;post&#39;&gt;
+                                &lt;button class=&#39;btn btn-danger btn-sm&#39; type=&#39;submit&#39;&gt;Yes&lt;/button&gt;
+                                &lt;button class=&#39;btn btn-link btn-sm text-dark&#39; type=&#39;reset&#39;&gt;Cancel&lt;/button&gt;
+                            &lt;/form&gt;
+                            " data-placement="bottom" data-toggle="popover" data-trigger="click" id="reset" data-original-title="" title="">Reset</button>
+                    </ul>
+                </nav>
+                <iframe allowfullscreen="" class="d-flex flex-column flex-grow" src="./Mario - CS50 Lab_files/CAF745D8DB5770ACF1FB4892CC29EB46.html"></iframe>
+            </div>
+        </div>
+
+    
+
+
+</body></html>
